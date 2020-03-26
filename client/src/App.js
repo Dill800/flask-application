@@ -5,19 +5,42 @@ import axios from 'axios'
 
 function App() {
 
-  const [state, setState] = useState('empty message')
+  const [imageURL, setImageURL] = useState('')
+  const [name, setName] = useState('mewtwo')
 
   function update() {
-    axios.get('/endpoint')
-    .then((response) => {
-      console.log(response)
+    axios.get('/pokemon-img/' + name)
+    .then((response, err) => {
+      if(err) {
+        console.log('there weas an earra', err)
+        return;
+      }
+      setImageURL(response.data)
     })
+  }
+
+  function updateName(event) {
+    console.log(event.target.value)
+    setName(event.target.value)
+  }
+
+  function submit(event) {
+    event.preventDefault();
+    update()
   }
 
   return (
     <div className="App">
-      <p>{state}</p>
+      
       <button onClick={update}>Hit Endpoint</button>
+      <form onSubmit={submit}>
+          <label>
+            Poke-Dude:
+            <input type="text" onChange={updateName} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+      <img alt='nothin' src={imageURL}></img>
     </div>
   );
 }
